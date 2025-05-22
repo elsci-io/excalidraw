@@ -1,6 +1,6 @@
 {
-  "name": "@excalidraw/excalidraw",
-  "version": "0.18.0",
+  "name": "@elsci-io/excalidraw",
+  "version": "0.18.0-patch.2",
   "type": "module",
   "types": "./dist/types/excalidraw/index.d.ts",
   "main": "./dist/prod/index.js",
@@ -130,6 +130,7 @@
   "homepage": "https://github.com/excalidraw/excalidraw/tree/master/packages/excalidraw",
   "scripts": {
     "gen:types": "rm -rf types && tsc",
-    "build:esm": "rm -rf dist && node ../../scripts/buildPackage.js && yarn gen:types"
+    "build:esm": "rm -rf dist && node ../../scripts/buildPackage.js && yarn gen:types",
+    "publish": "npm publish --access public --registry=https://registry.npmjs.org/"
   }
 }
