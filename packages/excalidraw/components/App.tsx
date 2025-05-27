@@ -789,6 +789,7 @@ class App extends React.Component<AppProps, AppState> {
           this.actionManager.registerAction(action);
         },
         getStoreIncrementEmitter: this.getStoreIncrementEmitter,
+        getHistoryChangeEmitter: this.getHistoryChangeEmitter,
         refresh: this.refresh,
         setToast: this.setToast,
         id: this.id,
@@ -816,7 +817,6 @@ class App extends React.Component<AppProps, AppState> {
     };
 
     this.fonts = new Fonts(this.scene);
-    this.history = new History();
 
     this.actionManager.registerAll(actions);
     this.actionManager.registerAction(
@@ -1892,6 +1892,9 @@ class App extends React.Component<AppProps, AppState> {
 
   public getStoreIncrementEmitter = () => {
     return this.store.onStoreIncrementEmitter;
+  };
+  public getHistoryChangeEmitter = () => {
+    return this.history.onHistoryChangedEmitter;
   };
 
   public onInsertElements = (elements: readonly ExcalidrawElement[]) => {

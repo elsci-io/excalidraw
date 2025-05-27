@@ -795,6 +795,7 @@ export interface ExcalidrawImperativeAPI {
   getSceneElements: InstanceType<typeof App>["getSceneElements"];
   getAppState: () => InstanceType<typeof App>["state"];
   getStoreIncrementEmitter: InstanceType<typeof App>["getStoreIncrementEmitter"];
+  getHistoryChangeEmitter: InstanceType<typeof App>["getHistoryChangeEmitter"];
   getFiles: () => InstanceType<typeof App>["files"];
   getName: InstanceType<typeof App>["getName"];
   scrollToContent: InstanceType<typeof App>["scrollToContent"];
