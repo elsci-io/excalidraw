@@ -803,7 +803,6 @@ class App extends React.Component<AppProps, AppState> {
     };
 
     this.fonts = new Fonts(this.scene);
-    this.history = new History(this.store);
 
     this.actionManager.registerAll(actions);
     this.actionManager.registerAction(createUndoAction(this.history));
@@ -1565,7 +1564,8 @@ class App extends React.Component<AppProps, AppState> {
 
   public render() {
     const selectedElements = this.scene.getSelectedElements(this.state);
-    const { renderTopRightUI, renderCustomStats } = this.props;
+    const { renderTopRightUI, renderCustomStats, renderBreadcrumbs,
+      topIslandCustomElements } = this.props;
 
     const sceneNonce = this.scene.getSceneNonce();
     const { elementsMap, visibleElements } =
@@ -1653,6 +1653,8 @@ class App extends React.Component<AppProps, AppState> {
                           onHandToolToggle={this.onHandToolToggle}
                           langCode={getLanguage().code}
                           renderTopRightUI={renderTopRightUI}
+                          renderBreadcrumbs={renderBreadcrumbs}
+                          topIslandCustomElements={topIslandCustomElements}
                           renderCustomStats={renderCustomStats}
                           showExitZenModeBtn={
                             typeof this.props?.zenModeEnabled === "undefined" &&
