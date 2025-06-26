@@ -377,7 +377,7 @@ export const exportToSvg = async (
         // elements which don't contain the temp frame labels.
         // But it also requires that the exportToSvg is being supplied with
         // only the elements that we're exporting, and no extra.
-        payload: serializeAsJSON(elements, appState, files || {}, "local"),
+        payload: await serializeAsJSON(elements, appState, files || {}, "local"),
       });
     } catch (error: any) {
       console.error(error);

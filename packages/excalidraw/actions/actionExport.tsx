@@ -167,7 +167,7 @@ export const actionSaveToActiveFile = register({
             app.files,
             app.getName(),
           )
-        : await saveAsJSON(elements, appState, app.files, app.getName());
+        : await saveAsJSON(elements, appState, app.files, app.getName(), app.props.transformCopiedFiles);
 
       return {
         captureUpdate: CaptureUpdateAction.EVENTUALLY,
@@ -215,6 +215,7 @@ export const actionSaveFileToDisk = register({
         },
         app.files,
         app.getName(),
+        app.props.transformCopiedFiles,
       );
       return {
         captureUpdate: CaptureUpdateAction.EVENTUALLY,

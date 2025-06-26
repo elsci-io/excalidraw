@@ -577,6 +577,11 @@ export interface ExcalidrawProps {
     isMobile: boolean,
     appState: UIAppState,
   ) => JSX.Element | null;
+  transformCopiedFiles: (
+    files: BinaryFiles | null
+  ) => Promise<BinaryFiles>;
+  onImagePaste: (
+    file: any) => Promise<DataURL>;
   topIslandCustomElements?: (
     isMobile: boolean,
     appState: UIAppState,

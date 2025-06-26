@@ -135,12 +135,14 @@ export const createPasteEvent = ({
   return event;
 };
 
-export const serializeAsClipboardJSON = ({
+export const serializeAsClipboardJSON = async ({
   elements,
   files,
+  transformCopiedFiles
 }: {
   elements: readonly NonDeletedExcalidrawElement[];
   files: BinaryFiles | null;
+  transformCopiedFiles?: (file: BinaryFiles|null) => Promise<BinaryFiles>;
 }) => {
   const elementsMap = arrayToMap(elements);
   const framesToCopy = new Set(
@@ -148,7 +150,7 @@ export const serializeAsClipboardJSON = ({
   );
   let foundFile = false;
 
-  const _files = elements.reduce((acc, element) => {
+  let _files = elements.reduce((acc, element) => {
     if (isInitializedImageElement(element)) {
       foundFile = true;
       if (files && files[element.fileId]) {
@@ -163,6 +165,8 @@ export const serializeAsClipboardJSON = ({
       "copyToClipboard: attempting to file element(s) without providing associated `files` object.",
     );
   }
+
+  _files = transformCopiedFiles ? await transformCopiedFiles(_files) : _files
 
   // select bound text elements when copying
   const contents: ElementsClipboard = {
@@ -192,11 +196,10 @@ export const copyToClipboard = async (
   files: BinaryFiles | null,
   /** supply if available to make the operation more certain to succeed */
   clipboardEvent?: ClipboardEvent | null,
+  transformCopiedFiles?: (file: BinaryFiles|null) => Promise<BinaryFiles>,
 ) => {
-  await copyTextToSystemClipboard(
-    serializeAsClipboardJSON({ elements, files }),
-    clipboardEvent,
-  );
+  const serializedFiles = await serializeAsClipboardJSON({ elements, files: files, transformCopiedFiles });
+  await copyTextToSystemClipboard(serializedFiles, clipboardEvent);
 };
 
 const parsePotentialSpreadsheet = (

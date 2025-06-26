@@ -30,6 +30,8 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     onPointerUpdate,
     renderTopRightUI,
     renderBreadcrumbs,
+    transformCopiedFiles,
+    onImagePaste,
     topIslandCustomElements,
     langCode = defaultLang.code,
     viewModeEnabled,
@@ -124,6 +126,8 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           onPointerUpdate={onPointerUpdate}
           renderTopRightUI={renderTopRightUI}
           renderBreadcrumbs={renderBreadcrumbs}
+          transformCopiedFiles={transformCopiedFiles}
+          onImagePaste={onImagePaste}
           topIslandCustomElements={topIslandCustomElements}
           langCode={langCode}
           viewModeEnabled={viewModeEnabled}

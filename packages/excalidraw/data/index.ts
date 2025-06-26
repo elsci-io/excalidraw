@@ -171,11 +171,12 @@ export const exportCanvas = async (
     let blob = canvasToBlob(tempCanvas);
 
     if (appState.exportEmbedScene) {
+      const metadata = await serializeAsJSON(elements, appState, files, "local");
       blob = blob.then((blob) =>
         import("./image").then(({ encodePngMetadata }) =>
           encodePngMetadata({
             blob,
-            metadata: serializeAsJSON(elements, appState, files, "local"),
+            metadata
           }),
         ),
       );

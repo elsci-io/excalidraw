@@ -3953,7 +3953,9 @@ class App extends React.Component<AppProps, AppState> {
       addedFiles[fileData.id] = fileData;
       nextFiles[fileData.id] = fileData;
 
-      if (fileData.mimeType === MIME_TYPES.svg) {
+      // In org cases in dataURL we store link to file in DB,
+      // so case with base64 data do not match with this code
+      if (fileData.mimeType === MIME_TYPES.svg && fileData.dataURL.startsWith("data")) {
         try {
           const restoredDataURL = getDataURL_sync(
             normalizeSVG(dataURLToString(fileData.dataURL)),
@@ -10054,8 +10056,9 @@ class App extends React.Component<AppProps, AppState> {
       this.setImagePreviewCursor(resizedFile || imageFile);
     }
 
-    const dataURL =
-      this.files[fileId]?.dataURL || (await getDataURL(imageFile));
+    const dataURL = this.props.onImagePaste ?
+      this.files[fileId]?.dataURL || await this.props.onImagePaste(imageFile) || await getDataURL(imageFile) :
+      this.files[fileId]?.dataURL || await getDataURL(imageFile);
 
     const imageElement = this.scene.mutateElement(
       _imageElement,

@@ -141,7 +141,7 @@ export const exportToBlob = async (
         ) {
           blob = await encodePngMetadata({
             blob,
-            metadata: serializeAsJSON(
+            metadata: await serializeAsJSON(
               // NOTE as long as we're using the Scene hack, we need to ensure
               // we pass the original, uncloned elements when serializing
               // so that we keep ids stable

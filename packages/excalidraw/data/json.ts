@@ -47,12 +47,15 @@ const filterOutDeletedFiles = (
   return nextFiles;
 };
 
-export const serializeAsJSON = (
+export const serializeAsJSON = async (
   elements: readonly ExcalidrawElement[],
   appState: Partial<AppState>,
   files: BinaryFiles,
   type: "local" | "database",
-): string => {
+  transformCopiedFiles?: (file: BinaryFiles) => Promise<BinaryFiles>,
+): Promise<string> => {
+  const modifiedFiles = transformCopiedFiles ?
+    await transformCopiedFiles(files) : files;
   const data: ExportedDataState = {
     type: EXPORT_DATA_TYPES.excalidraw,
     version: VERSIONS.excalidraw,
@@ -67,11 +70,10 @@ export const serializeAsJSON = (
         : clearAppStateForDatabase(appState),
     files:
       type === "local"
-        ? filterOutDeletedFiles(elements, files)
+        ? filterOutDeletedFiles(elements, modifiedFiles)
         : // will be stripped from JSON
           undefined,
   };
-
   return JSON.stringify(data, null, 2);
 };
 
@@ -81,8 +83,9 @@ export const saveAsJSON = async (
   files: BinaryFiles,
   /** filename */
   name: string = appState.name || DEFAULT_FILENAME,
+  transformCopiedFiles?: (file: BinaryFiles) => Promise<BinaryFiles>,
 ) => {
-  const serialized = serializeAsJSON(elements, appState, files, "local");
+  const serialized = await serializeAsJSON(elements, appState, files, "local", transformCopiedFiles);
   const blob = new Blob([serialized], {
     type: MIME_TYPES.excalidraw,
   });
