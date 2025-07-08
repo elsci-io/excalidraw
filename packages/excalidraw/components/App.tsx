@@ -3168,7 +3168,7 @@ class App extends React.Component<AppProps, AppState> {
 
       if (this.props.onPaste) {
         try {
-          if ((await this.props.onPaste(data, event)) === false) {
+          if ((await this.props.onPaste(data)) === false) {
             return;
           }
         } catch (error: any) {

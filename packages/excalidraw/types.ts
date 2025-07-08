@@ -551,8 +551,7 @@ export interface ExcalidrawProps {
     pointersMap: Gesture["pointers"];
   }) => void;
   onPaste?: (
-    data: ClipboardData,
-    event: ClipboardEvent | null,
+    data: ClipboardData
   ) => Promise<boolean> | boolean;
   /**
    * Called when element(s) are duplicated so you can listen or modify as

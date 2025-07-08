@@ -45,13 +45,14 @@ export interface ClipboardData {
   mixedContent?: PastedMixedContent;
   errorMessage?: string;
   programmaticAPI?: boolean;
+  rawValue?: string;
 }
 
 type AllowedPasteMimeTypes = typeof ALLOWED_PASTE_MIME_TYPES[number];
 
 type ParsedClipboardEventTextData =
-  | { type: "text"; value: string }
-  | { type: "mixedContent"; value: PastedMixedContent };
+  | { type: "text"; value: string, rawValue: string }
+  | { type: "mixedContent"; value: PastedMixedContent, rawValue: string };
 
 export const probablySupportsClipboardReadText =
   "clipboard" in navigator && "readText" in navigator.clipboard;
@@ -231,7 +232,7 @@ function parseHTMLTree(el: ChildNode) {
 
 const maybeParseHTMLPaste = (
   event: ClipboardEvent,
-): { type: "mixedContent"; value: PastedMixedContent } | null => {
+): { type: "mixedContent"; value: PastedMixedContent, rawValue: string } | null => {
   const html = event.clipboardData?.getData(MIME_TYPES.html);
 
   if (!html) {
@@ -244,7 +245,8 @@ const maybeParseHTMLPaste = (
     const content = parseHTMLTree(doc.body);
 
     if (content.length) {
-      return { type: "mixedContent", value: content };
+      const rawValue = content.map((item) => item.value).join("\n");
+      return { type: "mixedContent", value: content, rawValue };
     }
   } catch (error: any) {
     console.error(`error in parseHTMLFromPaste: ${error.message}`);
@@ -340,14 +342,16 @@ const parseClipboardEventTextData = async (
 
     if (mixedContent) {
       if (mixedContent.value.every((item) => item.type === "text")) {
+
+        const rawValue = event.clipboardData?.getData(MIME_TYPES.text) ||
+          mixedContent.value
+            .map((item) => item.value)
+            .join("\n");
+
         return {
           type: "text",
-          value:
-            event.clipboardData?.getData(MIME_TYPES.text) ||
-            mixedContent.value
-              .map((item) => item.value)
-              .join("\n")
-              .trim(),
+          value: rawValue.trim(),
+          rawValue: rawValue
         };
       }
 
@@ -356,9 +360,9 @@ const parseClipboardEventTextData = async (
 
     const text = event.clipboardData?.getData(MIME_TYPES.text);
 
-    return { type: "text", value: (text || "").trim() };
+    return { type: "text", value: (text || "").trim(), rawValue: (text || "") };
   } catch {
-    return { type: "text", value: "" };
+    return { type: "text", value: "", rawValue: "" };
   }
 };
 
@@ -409,7 +413,7 @@ export const parseClipboard = async (
     }
   } catch {}
 
-  return { text: parsedEventData.value };
+  return { text: parsedEventData.value,  rawValue: parsedEventData.rawValue};
 };
 
 export const copyBlobToClipboardAsPng = async (blob: Blob | Promise<Blob>) => {
